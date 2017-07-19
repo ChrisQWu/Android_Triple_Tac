@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Gets all the TextViews from the layout through .getChildAt(int)
      * @return List<TextView>
+     *
      */
     List<TextView> getTexts()
     {
