@@ -1,7 +1,12 @@
 package com.example.chriswu.triple_tac_toe;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +23,10 @@ class Game_Controller {
     public static final char O = 'O';
     public static final int MAX_ROW = 3;
     public static final int MAX_COL = 3;
+    private static int prevRow = -1;
+    private static int prevCol = -1;
+
+    private static List<Quadruple> moveList = new ArrayList<>();
 
     static Game_Controller getInstance() {
         return ourInstance;
@@ -36,7 +45,7 @@ class Game_Controller {
      * Fourth sets the large TextView above to let the player's know whose turn it is
      * @param textViews
      */
-    public void instantiate(List<TextView> textViews) {
+    public void instantiate(List<TextView> textViews, List<Button> buttons) {
         instantiateSmallGrid();
         assignSmallGrid(textViews);
         chooseFirstPlayer();
@@ -84,21 +93,23 @@ class Game_Controller {
      * @param col
      */
     public void changeTurn(int row, int col) {
-        current_Turn = current_Turn == X ? O : X;
-        setNotifier("Current Turn: " + getTurn());
-        if (!checkWin(row, col)) {
+        if (!checkWin()) {
+            moveList.add(new Quadruple(prevRow,prevCol,row,col));
+            prevRow = row;
+            prevCol = col;
             markSmallGrids(row, col);
+            current_Turn = current_Turn == X ? O : X;
+            setNotifier("Current Turn: " + getTurn());
         }
-
     }
 
     /**
      * Global win check
-     * @param row of the Small_Grid in the largeGrid
-     * @param col of the Small_Grid in the largeGrid
      * @return if there are 3 Small_Grids that are the same in a row
      */
-    private boolean checkWin(int row, int col) {
+    private boolean checkWin() {
+        int row = prevRow, col = prevCol;
+        if(prevRow==-1) return false;
         if (checkWinHelper(row, col, 0, 1)//horizontal
                 || checkWinHelper(row, col, 1, 0)//vertical
                 || checkWinHelper(row, col, 1, 1)//positive diagonal
@@ -169,6 +180,30 @@ class Game_Controller {
 
     private void setNotifier(String message) {
         notifier.setText(message);
+    }
+
+    public class UndoClicker implements View.OnClickListener {
+
+
+        @Override
+        /**
+         * Only makes a move if the color is BLUE
+         */
+        public void onClick(View view) {
+
+        }
+    }
+
+    public class ResetClicker implements View.OnClickListener {
+
+
+        @Override
+        /**
+         * Only makes a move if the color is BLUE
+         */
+        public void onClick(View view) {
+
+        }
     }
 
 }
