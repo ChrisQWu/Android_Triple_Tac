@@ -61,14 +61,23 @@ public class Small_Grid {
      *
      * @param on
      */
-    public void markGrids(boolean on) {
+    public String markGrids(boolean on) {
+        String gridState = "";
         for (int row = 0; row < game_controller.MAX_ROW; row++) {
             for (int col = 0; col < game_controller.MAX_COL; col++) {
                 if (on && grid[row][col].getText().toString().equals("" + game_controller.EMPTY_CHAR)) {
                     grid[row][col].setBackgroundColor(Color.BLUE);
-                } else grid[row][col].setBackgroundColor(Color.RED);
+
+                }
+                else
+                {
+                    grid[row][col].setBackgroundColor(Color.RED);
+                }
+                String s = grid[row][col].getText().toString();
+                gridState+=s.equals(" ")?"-":s;
             }
         }
+        return gridState;
     }
 
     /**
@@ -101,6 +110,7 @@ public class Small_Grid {
         {
             Log.d("Winner", "" + game_controller.getTurn());
             occupied.setText("" + game_controller.getTurn());
+            emptyTiles();
         }
     }
 
@@ -134,5 +144,60 @@ public class Small_Grid {
             }
         }
         return false;
+    }
+
+    private void emptyTiles()
+    {
+        for (int row = 0; row < game_controller.MAX_ROW; row++) {
+            for (int col = 0; col < game_controller.MAX_COL; col++) {
+                grid[row][col].setText("" + game_controller.EMPTY_CHAR);
+            }
+        }
+    }
+
+    public void resetGrid()
+    {
+        occupied.setText("" + game_controller.EMPTY_CHAR);
+        for (int row = 0; row < game_controller.MAX_ROW; row++) {
+            for (int col = 0; col < game_controller.MAX_COL; col++) {
+                grid[row][col].setBackgroundColor(Color.BLUE);
+                grid[row][col].setText("" + game_controller.EMPTY_CHAR);
+            }
+        }
+    }
+
+    public void markAllTiles(boolean on)
+    {
+        int color = on?Color.BLUE:Color.RED;
+        for (int row = 0; row < game_controller.MAX_ROW; row++) {
+            for (int col = 0; col < game_controller.MAX_COL; col++) {
+                grid[row][col].setBackgroundColor(color);
+                grid[row][col].setText("" + game_controller.EMPTY_CHAR);
+            }
+        }
+    }
+
+    public void setGrid(String gridState)
+    {
+        System.out.println("Small Board: "+gridState);
+        char[] chars = gridState.toCharArray();
+        char on = chars[0];
+        char c = chars[1]=='-'?game_controller.EMPTY_CHAR:chars[1];
+        occupied.setText("" + c);
+        int i = 2;
+        for (int row = 0; row < Game_Controller.MAX_ROW; row++) {
+            for (int col = 0; col < Game_Controller.MAX_COL; col++) {
+                c = chars[i]=='-'?Game_Controller.EMPTY_CHAR:chars[i];
+                grid[row][col].setText("" + c);
+                if (on == '1' && c==Game_Controller.EMPTY_CHAR) {
+                    grid[row][col].setBackgroundColor(Color.BLUE);
+                }
+                else
+                {
+                    grid[row][col].setBackgroundColor(Color.RED);
+                }
+                i++;
+            }
+        }
     }
 }
