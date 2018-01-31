@@ -112,6 +112,11 @@ public class Small_Grid {
             occupied.setText("" + game_controller.getTurn());
             emptyTiles();
         }
+        if(checkTie())
+        {
+            occupied.setText(""+game_controller.TIE);
+            emptyTiles();
+        }
     }
 
     /**
@@ -144,6 +149,20 @@ public class Small_Grid {
             }
         }
         return false;
+    }
+
+    private boolean checkTie()
+    {
+        for (int row = 0; row < game_controller.MAX_ROW; row++) {
+            for (int col = 0; col < game_controller.MAX_COL; col++) {
+                System.out.println("Grid: Row: "+row+"\tCol: "+col+"  "+grid[row][col].getText());
+                if(grid[row][col].getText().toString().equals(""+game_controller.EMPTY_CHAR))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void emptyTiles()

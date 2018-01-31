@@ -113,6 +113,16 @@ class Game_Controller {
             current_Turn = current_Turn == X ? O : X;
             setNotifier("Current Turn: " + getTurn());
         }
+        if(checkTie())
+        {
+            System.out.println("Checking Ties");
+            moveList.add(boardState);
+            prevRow = row;
+            prevCol = col;
+            boardState = getTurn() + markSmallGrids(row, col);
+            current_Turn = current_Turn == X ? O : X;
+            setNotifier("TIE");
+        }
     }
 
     /**
@@ -166,6 +176,10 @@ class Game_Controller {
      */
     private boolean checkWinHelper(int row, int col, int rowInc, int colInc) {
         char middle = largeGrid[row][col].getOccupied();
+        if(middle==TIE || middle==EMPTY_CHAR)
+        {
+            return false;
+        }
         int count = 0;
         for (int i = -2; i <= 2; i++) {
             int tempRow = row + i * rowInc;
@@ -175,7 +189,7 @@ class Game_Controller {
                 if (largeGrid[tempRow][tempCol].getOccupied() != middle
                         || largeGrid[tempRow][tempCol].getOccupied() == EMPTY_CHAR) {
                     count = 0;
-                } else {//counts for 3 in a row
+                } else{//counts for 3 in a row
                     count++;
                     if (count >= 3) {
                         return true;
@@ -185,6 +199,19 @@ class Game_Controller {
         }
 
         return false;
+    }
+
+    private boolean checkTie()
+    {
+        for (int row = 0; row < MAX_ROW; row++) {
+            for (int col = 0; col < MAX_COL; col++) {
+                if(largeGrid[row][col].getOccupied()==EMPTY_CHAR)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -228,17 +255,19 @@ class Game_Controller {
         notifier.setText(message);
     }
 
-    public static void reset(){
+    public void reset(){
         moveList.clear();
         for (int row = 0; row < MAX_ROW; row++) {
             for (int col = 0; col < MAX_COL; col++) {
                 largeGrid[row][col].resetGrid();
             }
         }
+
         chooseFirstPlayer();
         boardState = getTurn()+",1----------,1----------,1----------,"//current turn
                 +"1----------,1----------,1----------,"//0 or 1 for small grid available
                 +"1----------,1----------,1----------";
+        setNotifier("Current turn: "+getTurn());
     }
 
     public class ResetClicker implements View.OnClickListener {
@@ -248,7 +277,7 @@ class Game_Controller {
          * Only makes a move if the color is BLUE
          */
         public void onClick(View view) {
-           Game_Controller.reset();
+           reset();
         }
     }
 
